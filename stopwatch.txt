@@ -1,4 +1,132 @@
-http://www.codeskulptor.org/#user4-uRqPoKaeFg-0.py
-http://www.codeskulptor.org/#user4-uRqPoKaeFg-2.py
-http://www.codeskulptor.org/#user4-uRqPoKaeFg-3.py
-http://www.codeskulptor.org/#user4-uRqPoKaeFg-7.py
+# "Stopwatch: The Game"
+# 11/02/12 Matt!  
+# Hi to evaluators from Washington, DC, USA.  THANKS
+
+#imports
+import simplegui
+import math
+
+# define global variables
+global time_in_ms
+global total_stops
+global correct_stops
+global timer_active
+
+
+# define helper function format that converts integer
+# counting tenths of seconds into formatted string A:BC.D
+
+def format_string(mynum, mytype):    
+    
+    if mytype == "minutes":
+        if mynum > 10:
+            #protect from long running games
+            return str(0)
+        else:
+            return str(mynum)
+    elif mytype == "seconds":
+        if mynum < 10:
+           return "0" + str(mynum)
+        else:
+           return str(mynum)
+    elif mytype == "milliseconds":
+        return str(mynum)
+    else:
+        print "unknown type" 
+        
+
+def format(t):
+    
+    minutes = math.floor(t/600)    
+    seconds = math.floor((t % 600)/10)    
+    tenths_seconds = (t % 600) % 10
+    
+    minutes_string = format_string(minutes, "minutes")
+    seconds_string = format_string(seconds, "seconds")
+    milliseconds_string = format_string(tenths_seconds, "milliseconds")
+    
+    final_str = format_string(minutes, "minutes") + ":" 
+    final_str += format_string(seconds, "seconds") + "." 
+    final_str += format_string(tenths_seconds, "milliseconds")
+                                          
+    return final_str
+
+    
+# define event handlers for buttons; "Start", "Stop", "Reset"
+
+def buttonstart_handler():
+    global timer_active
+    
+    timer_active = 1
+    timer.start()
+    
+    
+def buttonstop_handler():
+    global time_in_ms
+    global total_stops
+    global correct_stops
+    global timer_active
+    
+    timer.stop()
+    
+    if timer_active == 1:
+        total_stops += 1
+    
+        if (time_in_ms % 10 == 0):
+            correct_stops += 1    
+    
+    timer_active = 0
+      
+    
+def buttonreset_handler():
+    global time_in_ms   
+    global correct_stops
+    global total_stops
+    global timer_active
+    
+    timer.stop() 
+    time_in_ms = 0
+    correct_stops = 0
+    total_stops = 0
+    timer_active = 0
+
+    
+# define event handler for timer with 0.1 sec interval
+def timer_handler():
+    global time_in_ms 
+    
+    #dont think this explicit int is really necessary
+    time_in_ms = int(time_in_ms + 1) 
+
+    
+def draw_handler(canvas):
+    global time_in_ms
+    global total_stops
+    global correct_stops
+    
+    canvas.draw_text(format(time_in_ms), (45,114), 32, "White")
+    canvas.draw_text(str(correct_stops) + "/" + str(total_stops), (10,20), 14, "Red")
+   
+    
+# create frame
+frame = simplegui.create_frame("Stopwatch: The Sport", 200, 200)
+
+
+# register event handlers
+timer = simplegui.create_timer(100, timer_handler)
+frame.set_draw_handler(draw_handler)
+
+buttonstart = frame.add_button("START", buttonstart_handler,75)
+buttonstart = frame.add_button("STOP", buttonstop_handler,75)
+buttonreset = frame.add_button("RESET", buttonreset_handler,75)
+
+
+# start timer and frame
+
+time_in_ms = 0
+total_stops = 0
+correct_stops = 0
+timer_active = 1
+frame.start()
+#I guess no starting the timer here. Like the video
+#timer.start()

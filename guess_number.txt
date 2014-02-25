@@ -1,4 +1,144 @@
-http://www.codeskulptor.org/#user3-pAzd0obTt3-1.py
-http://www.codeskulptor.org/#user3-pAzd0obTt3-3.py
-http://www.codeskulptor.org/#user3-pAzd0obTt3-4.py
-http://www.codeskulptor.org/#user3-pAzd0obTt3-6.py
+# Matt! 10/27/12
+# Hi to evaluators from Washington, DC, USA.  THANKS
+
+#"Guess the number" mini-project
+# input will come from buttons and an input field
+# all output for the game will be printed in the console
+
+#imports
+import simplegui
+import random
+import math
+
+# initialize global variables 
+global computerguess
+global rangelow
+global rangehigh
+global guesskount
+global userguess
+global allowedguesses
+#toggle verbositynesss
+global dbug
+
+# define event handlers for control panel
+    
+def range100():
+    # button that changes range to range [0,100) and restarts
+    global rangelow
+    global rangehigh
+    global allowedguesses
+    global guesskount
+    
+    guesskount = 0
+    rangelow = 0
+    rangehigh = 100
+    
+    
+    if dbug == 1:
+        print "guesskount " + str(guesskount)
+        print "rangelow " + str(rangelow)
+        print "rangehigh " + str(rangehigh)
+
+    
+
+def range1000():
+    # button that changes range to range [0,1000) and restarts
+    global rangelow
+    global rangehigh
+    global allowedguesses
+    global guesskount
+    
+    guesskount = 0
+    rangelow = 0
+    rangehigh = 1000
+
+  
+#button handler
+def button_handler100():
+    print "New game in 0 to 100 range\n"
+    range100()
+
+    
+def button_handler1000():
+    print "New game in 0 to 1000 range\n"
+    range1000()
+    
+def get_input(guess):
+    
+    # main game logic goes here	
+    
+    global guesskount
+    global userguess
+    global computerguess
+    
+    userguess = int(guess)   
+    
+    if guesskount == 0:
+        guesskount = 1
+        computerguess = random.randrange(rangelow,rangehigh)
+    else:
+       guesskount = guesskount + 1
+     
+    if dbug == 1:
+        print "guesskount " + str(guesskount)
+        print "userguess " + str(userguess)
+        print "computerguess " + str(computerguess)
+      
+    print "You guessed " + str(userguess)
+    
+    #Check for guess limit
+    if math.pow(2,guesskount) >= (rangehigh - rangelow + 1):
+       print "Sorry, out of guesses. The number was " + str(computerguess) 
+       print "New game in range " + str(rangelow) + " to "               + str(rangehigh) + " has begun\n"
+       #RESTART
+       if rangehigh == 100:
+           range100()
+       elif rangehigh == 1000:
+           range1000()
+       else:
+           print "Bad\n" 
+    else:
+        
+        print "number of remaining guesses is "
+        
+    
+    if computerguess < userguess:
+        print "Lower nephew!\n"
+    elif computerguess > userguess:
+        print "Higher nephew!\n"
+    elif computerguess == userguess:
+        print "Correct. Yeahhh!"  
+        print "New game has begun\n"
+        #RESTART
+        if rangehigh == 100:
+            range100()
+        elif rangehigh == 1000:
+            range1000()
+        else:
+            print "Bad\n"        
+    else:
+        print "Baddy logic\n"
+        
+
+        
+        
+   
+#initialize these guys
+dbug = 0
+guesskount = 0
+rangelow = 0
+rangehigh = 100
+
+# create frame
+frame = simplegui.create_frame("Yeahhh!", 300, 300)
+
+# register event handlers for control elements
+inp = frame.add_input("Enter your guess, cousin", get_input, 50)
+
+#sew buttons
+button1 = frame.add_button("Range: 0 - 100", button_handler100)
+button2 = frame.add_button("Range: 0 - 1000", button_handler1000)
+
+
+# start frame
+frame.start()
